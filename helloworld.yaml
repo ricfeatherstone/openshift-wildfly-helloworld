@@ -1,0 +1,277 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2018-12-04T09:41:28Z
+    labels:
+      app: helloworld
+    name: helloworld
+    namespace: ric
+    resourceVersion: "7227639"
+    selfLink: /api/v1/namespaces/ric/services/helloworld
+    uid: c5f16d4e-f7a8-11e8-a8e3-060ea9be1e4a
+  spec:
+    clusterIP: 172.30.243.242
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: helloworld
+      deploymentconfig: helloworld
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2018-12-04T09:41:28Z
+    generation: 1
+    labels:
+      app: helloworld
+    name: helloworld
+    namespace: ric
+    resourceVersion: "7227633"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/ric/deploymentconfigs/helloworld
+    uid: c5e83bb3-f7a8-11e8-a8e3-060ea9be1e4a
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: helloworld
+      deploymentconfig: helloworld
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: helloworld
+          deploymentconfig: helloworld
+      spec:
+        containers:
+        - env:
+          - name: HTTP_PROXY_HOST
+            value: cloudops.proxy.npd.security.vm
+          - name: HTTP_PROXY_PORT
+            value: "80"
+          image: helloworld:latest
+          imagePullPolicy: Always
+          name: helloworld
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - helloworld
+        from:
+          kind: ImageStreamTag
+          name: helloworld:latest
+          namespace: ric
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    conditions:
+    - lastTransitionTime: 2018-12-04T09:41:28Z
+      lastUpdateTime: 2018-12-04T09:41:28Z
+      message: Deployment config does not have minimum availability.
+      status: "False"
+      type: Available
+    latestVersion: 0
+    observedGeneration: 1
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2018-12-04T09:41:28Z
+    labels:
+      app: helloworld
+    name: helloworld
+    namespace: ric
+    resourceVersion: "7227626"
+    selfLink: /apis/build.openshift.io/v1/namespaces/ric/buildconfigs/helloworld
+    uid: c5dcb0a9-f7a8-11e8-a8e3-060ea9be1e4a
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: helloworld:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        uri: https://github.com/ricfeatherstone/openshift-wildfly-helloworld.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: wildfly:13.0
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: kNesY01_SSASCeH2rzAc
+      type: GitHub
+    - generic:
+        secret: qgWMKentwgjs7WZsbHju
+      type: Generic
+    - type: ConfigChange
+    - imageChange:
+        lastTriggeredImageID: docker-registry.default.svc:5000/openshift/wildfly@sha256:5b32c952dd19eecedfb6b802ea0d730c8da37ba19102331e7f54cafd5d2b917c
+      type: ImageChange
+  status:
+    lastVersion: 1
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: helloworld
+      openshift.io/build.number: "1"
+      openshift.io/build.pod-name: helloworld-1-build
+    creationTimestamp: 2018-12-04T09:41:28Z
+    labels:
+      app: helloworld
+      buildconfig: helloworld
+      openshift.io/build-config.name: helloworld
+      openshift.io/build.start-policy: Serial
+    name: helloworld-1
+    namespace: ric
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: helloworld
+      uid: c5dcb0a9-f7a8-11e8-a8e3-060ea9be1e4a
+    resourceVersion: "7227753"
+    selfLink: /apis/build.openshift.io/v1/namespaces/ric/builds/helloworld-1
+    uid: c5e1fc24-f7a8-11e8-a8e3-060ea9be1e4a
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-tsqj9
+      to:
+        kind: ImageStreamTag
+        name: helloworld:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: ricfeatherstone@users.noreply.github.com
+          name: ricfeatherstone
+        commit: 7dc87ee8a04fc816b1c86b0dbf81f2b2f0771304
+        committer:
+          email: noreply@github.com
+          name: GitHub
+        message: Add OpenShift profile
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        uri: https://github.com/ricfeatherstone/openshift-wildfly-helloworld.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker-registry.default.svc:5000/openshift/wildfly@sha256:5b32c952dd19eecedfb6b802ea0d730c8da37ba19102331e7f54cafd5d2b917c
+        pullSecret:
+          name: builder-dockercfg-tsqj9
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: wildfly:13.0
+          namespace: openshift
+        imageID: docker-registry.default.svc:5000/openshift/wildfly@sha256:5b32c952dd19eecedfb6b802ea0d730c8da37ba19102331e7f54cafd5d2b917c
+      message: Image change
+  status:
+    completionTimestamp: 2018-12-04T09:41:45Z
+    config:
+      kind: BuildConfig
+      name: helloworld
+      namespace: ric
+    duration: 17000000000
+    logSnippet: |-
+      [ERROR]
+      [ERROR] For more information about the errors and possible solutions, please read the following articles:
+      [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
+      Aborting due to error code 1 from mvn package
+      error: build error: non-zero (13) exit code from docker-re...952dd19eecedfb6b802ea0d730c8da37ba19102331e7f54cafd5d2b917c
+    message: Assemble script failed.
+    output: {}
+    outputDockerImageReference: docker-registry.default.svc:5000/ric/helloworld:latest
+    phase: Failed
+    reason: AssembleFailed
+    stages:
+    - durationMilliseconds: 1259
+      name: FetchInputs
+      startTime: 2018-12-04T09:41:33Z
+      steps:
+      - durationMilliseconds: 1259
+        name: FetchGitSource
+        startTime: 2018-12-04T09:41:33Z
+    startTimestamp: 2018-12-04T09:41:28Z
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2018-12-04T09:41:28Z
+    generation: 1
+    labels:
+      app: helloworld
+    name: helloworld
+    namespace: ric
+    resourceVersion: "7227624"
+    selfLink: /apis/image.openshift.io/v1/namespaces/ric/imagestreams/helloworld
+    uid: c5d3790a-f7a8-11e8-a8e3-060ea9be1e4a
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: docker-registry.default.svc:5000/ric/helloworld
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: helloworld-build-template
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: helloworld
+    labels:
+      app: helloworld
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: helloworld
+    labels:
+      app: helloworld
+  spec:
+    source:
+      git:
+        uri: https://github.com/ricfeatherstone/openshift-wildfly-helloworld.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+        - name: HTTP_PROXY_HOST
+          value: "${HTTP_PROXY_HOST}"
+        - name: HTTP_PROXY_PORT
+          value: "${HTTP_PROXY_PORT}"
+        from:
+          kind: ImageStreamTag
+          name: wildfly:13.0
+          namespace: openshift
+      type: Source
+    output:
+      to:
+        kind: ImageStreamTag
+        name: helloworld:latest
+parameters:
+- name: HTTP_PROXY_HOST
+  description: Http proxy host to pass to maven build
+- name: HTTP_PROXY_PORT
+  description: Http proxy port to pass to maven build
